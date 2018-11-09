@@ -121,6 +121,25 @@ class PlotSetup(readtextfilelines):
         pl.title(self.ID,fontsize=9)
         
         return 0
+    
+    def Setup_CaratoPy_Map(self):
+        import pylab as pl
+        import numpy as np
+        import cartopy.crs as ccrs
+
+        #SHOULD DECOUPLE FIGURE SIZE FROM PLOT SETUP, BUT PASS SUBPLOT LOC.
+        pl.figure(figsize=(6.0, 3.0), dpi=150, facecolor="white")
+        ax = pl.axes(projection=ccrs.PlateCarree())
+        ax.gridlines(crs=ccrs.PlateCarree(),linewidth=0.2)
+        ax.set_xticks(np.linspace(-180,180,13), minor=False, crs=None)
+        ax.set_yticks(np.linspace(-90,90,7), minor=False, crs=None)
+        ax.tick_params(axis='both', which='major', labelsize=7)
+        #IN THE FUTURE SHOULD MAKE THESE CONFIGURATION FILE FIELDS
+        pl.ylabel("Latitude (deg)",fontsize=7)
+        pl.xlabel("Longitude (deg)",fontsize=7)
+        pl.title(self.ID,fontsize=9)
+        
+        return 0
 
 class Target_Parameters(readtextfilelines):
     """

@@ -19,6 +19,7 @@ class readtextfilelines:
         self.nrecords=len(self.CfgLines)
         self.FiletoRead=FiletoRead
         print "Hi end of readtextfilelines"
+        print self.nrecords
         
 class PlotSetup(readtextfilelines):
     """
@@ -36,7 +37,7 @@ class PlotSetup(readtextfilelines):
 
         for recordindex in range(1,self.nrecords):
             fields=self.CfgLines[recordindex].split(',')
-            print "************",fields[0],fields[1],fields[13]
+            print "************",fields[0],fields[1]
             if fields[0] == PlotID:
                 if fields[1] == PlotType:
                     print "In first if, fields[1]",fields[:]
@@ -52,7 +53,7 @@ class PlotSetup(readtextfilelines):
                     self.DataFile=str(fields[10])
                 if self.PlotType=="Map":
                     self.Labels=str(fields[11])
-                    print fields[11]
+                    print fields[11],fields[13]
                     print "###############",self.Labels
                     self.Grid=str(fields[12])
                     self.ColorPlane=str(fields[13])
@@ -87,56 +88,39 @@ class PlotSetup(readtextfilelines):
         pl.title(self.ID,fontsize=9)
         
         return 0
-    
-    def Setup_Map(self):
-        import pylab as pl
-        import numpy as np
-        #SHOULD DECOUPLE FIGURE SIZE FROM PLOT SETUP, BUT PASS SUBPLOT LOC.
-        pl.figure(figsize=(6.0, 3.0), dpi=150, facecolor="white")
-        pl.subplot(1, 1, 1)
-        #Calculate scaling - remember X0 is left side of plot, X1 is extent
-        Xpix0=0;Xpix1=self.X1-1
-        Xtickspix=(self.X1)/self.DX
-        DXpix=(Xpix1)/Xtickspix
-        pl.xticks(np.arange(Xpix0,Xpix1+1,DXpix),np.mod(np.arange(540,179,-30),360))
-        #Need to figure out the labeling for less the 360 longitude
-        #pl.xticks(np.arange(Xpix0,Xpix1+1,DXpix),np.mod(np.arange(540,179,-30),360))
-        #Calculate scaling
-        Ypix0=0;Ypix1=self.Y1-self.Y0-1
-        Ytickspix=(self.Y1-self.Y0)/self.DY
-        DYpix=(Ypix1-Ypix0)/Ytickspix
-        pl.yticks(np.arange(Ypix0,Ypix1+1,DYpix),np.arange(self.Y1,self.Y0-1,-self.DY))
-        print self.Y1, self.Y0-1, self.DY
-        print "Ypix0,Ypix1,Ytickspix,DYpix=",Ypix0,Ypix1,Ytickspix,DYpix
-        print np.arange(Ypix0,Ypix1+1,DYpix)
-        print np.arange(self.Y1,self.Y0-1,-self.DY)
-        print np.arange(0,181,30)
-        if self.Labels=="True": pl.grid(linewidth=0.2)
-        print "********************",self.Labels
-        pl.tick_params(axis='both', which='major', labelsize=7)
-        #IN THE FUTURE SHOULD MAKE THESE CONFIGURATION FILE FIELDS
-        if self.Type=="Map":
-            pl.ylabel("Latitude (deg)",fontsize=7)
-            pl.xlabel("Longitude (deg)",fontsize=7)
-        pl.title(self.ID,fontsize=9)
-        
-        return 0
-    
-    def Setup_CaratoPy_Map(self):
+       
+    def Setup_CaratoPy_Map(self,Projection,xs,ys,ns):
         import pylab as pl
         import numpy as np
         import cartopy.crs as ccrs
+        import matplotlib.path as mpath
 
-        #SHOULD DECOUPLE FIGURE SIZE FROM PLOT SETUP, BUT PASS SUBPLOT LOC.
-        pl.figure(figsize=(6.0, 3.0), dpi=150, facecolor="white")
-        ax = pl.axes(projection=ccrs.PlateCarree())
-        ax.gridlines(crs=ccrs.PlateCarree(),linewidth=0.2)
-        ax.set_xticks(np.linspace(-180,180,13), minor=False, crs=None)
-        ax.set_yticks(np.linspace(-90,90,7), minor=False, crs=None)
-        ax.tick_params(axis='both', which='major', labelsize=7)
+        if Projection=="PC":
+            ax = pl.subplot(xs,ys,ns,projection=ccrs.PlateCarree())
+            ax.gridlines(crs=ccrs.PlateCarree(),linewidth=0.2)
+            ax.set_xticks(np.linspace(-180,180,13), minor=False, crs=None)
+            ax.set_yticks(np.linspace(-90,90,7), minor=False, crs=None)
+            ax.tick_params(axis='both', which='major', labelsize=7)
+            pl.ylabel("Latitude (deg)",fontsize=7)
+            pl.xlabel("Longitude (deg)",fontsize=7)
+        else:
+            if Projection=="NP":
+                ax = pl.subplot(xs,ys,ns,projection=ccrs.NorthPolarStereo())
+                ax.set_extent([-180, 180, 0, 90], crs=ccrs.PlateCarree())
+            elif Projection=="SP":
+                ax = pl.subplot(xs,ys,ns,projection=ccrs.SouthPolarStereo())
+                ax.set_extent([-180, 180, -90, 0], crs=ccrs.PlateCarree())
+            ax.gridlines(crs=ccrs.PlateCarree(),linewidth=0.2)
+            ax.set_xticks(np.linspace(-180,180,13), minor=False, crs=None)
+            ax.set_yticks(np.linspace(-90,90,7), minor=False, crs=None)
+            ax.tick_params(axis='both', which='major', labelsize=7)
+            theta = np.linspace(0, 2*np.pi, 100)
+            center, radius = [0.5, 0.5], 0.5
+            verts = np.vstack([np.sin(theta), np.cos(theta)]).T
+            circle = mpath.Path(verts * radius + center)
+            ax.set_boundary(circle, transform=ax.transAxes)
+
         #IN THE FUTURE SHOULD MAKE THESE CONFIGURATION FILE FIELDS
-        pl.ylabel("Latitude (deg)",fontsize=7)
-        pl.xlabel("Longitude (deg)",fontsize=7)
         pl.title(self.ID,fontsize=9)
         
         return 0

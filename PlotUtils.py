@@ -28,8 +28,8 @@ class PlotSetup(CF.readtextfilelines):
     def loadplotparams(self,drive,PlotID,PlotType):
         #View has two options: raw or flux?
 
-        #self.ID=PlotID
-        #self.Type=PlotType
+        self.ID=PlotID
+        self.Type=PlotType
 
         for recordindex in range(1,self.nrecords):
             fields=self.CfgLines[recordindex].split(',')

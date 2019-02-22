@@ -53,7 +53,7 @@ class Target_Parameters(readtextfilelines):
                 self.DE2000=float(fields[3])
                 self.Distance=float(fields[4])
                 self.DistUnits=fields[5]
-                if self.TargetType=="Stars":
+                if self.TargetType=="Stars" or self.TargetType=="Planets":
                     self.mV=float(fields[6])
                     self.SpecType=fields[7]
                 elif self.TargetType=="Galaxies":

@@ -33,9 +33,13 @@ class PlotSetup(CF.readtextfilelines):
 
         for recordindex in range(1,self.nrecords):
             fields=self.CfgLines[recordindex].split(',')
+            print ""
+            print "fields[0]=",fields[0],PlotID
             if fields[0] == PlotID:
+                print "fields[1]=",fields[1],PlotType
                 if fields[1] == PlotType:
                     self.PlotType=str(fields[1])
+                    print self.PlotType,self.ID
                     self.X0=float(fields[2])
                     self.X1=float(fields[3])
                     self.DX=float(fields[4])

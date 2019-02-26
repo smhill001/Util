@@ -61,6 +61,43 @@ class Target_Parameters(readtextfilelines):
                     self.Incl=float(fields[7])
                     self.AppSize=float(fields[8])
 
+class measurement_list(readtextfilelines):
+    #Used to reside in SRL and have a different API for loading records
+    pass
+    
+    def load_records(self,MeasTgt="All",DateUTSelect="All"):
+
+        print "Hi in measurement_list>load_records"
+        self.MeasTarget=[]  #Keyword for star identification
+        self.DataType=[]           #Target, e.g., component of a multiple star
+        self.DataTarget=[]           #Target, e.g., component of a multiple star
+        self.DateUT=[]           #UT Date of observation: YYYYMMDDUT
+        self.Optics=[]       #Instrument code, to be used for aperture
+        self.Camera=[]       #Instrument code, to be used for aperture
+        self.Grating=[]    #Grating 100lpm or 200lpm or None
+        self.FileList=[]         #List of observation image files (FITS)
+        for recordindex in range(1,self.nrecords):
+            fields=self.CfgLines[recordindex].split(',')
+            if MeasTgt=="All" or MeasTgt==str(fields[0]):
+                if DateUTSelect=="All" or DateUTSelect==str(fields[3]):
+                    self.MeasTarget.extend([str(fields[0])])
+                    self.DataType.extend([str(fields[1])])
+                    self.DataTarget.extend([str(fields[2])])
+                    self.DateUT.extend([str(fields[3])])
+                    self.Optics.extend([str(fields[4])])
+                    self.Camera.extend([str(fields[5])])
+                    self.Grating.extend([str(fields[6])])
+                    self.FileList.extend([str(fields[7])])
+
+class ObsFileNames(readtextfilelines):
+    #Used to be the function GetObsFileNames in SRL
+    pass
+    def GetFileNames(self):
+        self.FNArray=[]
+        for recordindex in range(0,self.nrecords):
+            fields=str(self.CfgLines[recordindex]).split(',')
+            self.FNArray.append(fields[0])
+
 class built_path:
     def __init__(self,TargetParams):
         self.drive="f:"

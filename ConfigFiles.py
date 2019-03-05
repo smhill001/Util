@@ -45,7 +45,7 @@ class Target_Parameters(readtextfilelines):
 
         for recordindex in range(1,self.nrecords):
             fields=self.CfgLines[recordindex].split(',')
-            #print fields[0], fields[1]
+            print fields[0], fields[1]
             if fields[0] == TargetID:
                 self.TargetID=fields[0]
                 self.TargetType=fields[1]
@@ -65,7 +65,7 @@ class measurement_list(readtextfilelines):
     #Used to reside in SRL and have a different API for loading records
     pass
     
-    def load_records(self,MeasTgt="All",DateUTSelect="All"):
+    def load_records(self,MeasTgt="All",DateUTSelect="All",Grating="All"):
 
         print "Hi in measurement_list>load_records"
         self.MeasTarget=[]  #Keyword for star identification
@@ -79,15 +79,16 @@ class measurement_list(readtextfilelines):
         for recordindex in range(1,self.nrecords):
             fields=self.CfgLines[recordindex].split(',')
             if MeasTgt=="All" or MeasTgt==str(fields[0]):
-                if DateUTSelect=="All" or DateUTSelect==str(fields[3]):
-                    self.MeasTarget.extend([str(fields[0])])
-                    self.DataType.extend([str(fields[1])])
-                    self.DataTarget.extend([str(fields[2])])
-                    self.DateUT.extend([str(fields[3])])
-                    self.Optics.extend([str(fields[4])])
-                    self.Camera.extend([str(fields[5])])
-                    self.Grating.extend([str(fields[6])])
-                    self.FileList.extend([str(fields[7])])
+                if Grating=="All" or Grating==str(fields[6]):
+                    if DateUTSelect=="All" or DateUTSelect==str(fields[3]):
+                        self.MeasTarget.extend([str(fields[0])])
+                        self.DataType.extend([str(fields[1])])
+                        self.DataTarget.extend([str(fields[2])])
+                        self.DateUT.extend([str(fields[3])])
+                        self.Optics.extend([str(fields[4])])
+                        self.Camera.extend([str(fields[5])])
+                        self.Grating.extend([str(fields[6])])
+                        self.FileList.extend([str(fields[7])])
 
 class ObsFileNames(readtextfilelines):
     #Used to be the function GetObsFileNames in SRL
@@ -106,10 +107,21 @@ class built_path:
         
     def spectra(self,dateUT):
         self.input_path=self.base_path+'Spectral Data/'+dateUT+'/'
-        self.output_path=self.base_path+'Spectral Data/1D Spectra/'
+        self.One_D_path=self.base_path+'Spectral Data/1D Spectra/'
+        self.EW_path=self.base_path+'Spectral Data/EWs/'
         self.config_path=self.base_path+'Spectral Data/1D Spectra/Configuration Files/'
         self.reference_path=self.drive+'/Astronomy/Python Play/SPLibraries/SpectralReferenceFiles/ReferenceLibrary/'
         
     def Equivalent_Width(self):
         self.input_path=self.base_path+'Spectral Data/1D Spectra/'
         self.output_path=self.base_path+'Spectral Data/EWs/'
+        
+def MakeKeyDate(FN):
+    import datetime
+
+    Key=FN[0:7]+FN[16:32]
+    DateTime=datetime.datetime.strptime(Key[7:11]+"-"+Key[11:13]+"-" \
+        +Key[13:15]+"T"+Key[15:17]+":"+Key[17:19]+":"+Key[19:21], \
+        '%Y-%m-%dT%H:%M:%S')
+
+    return Key,DateTime

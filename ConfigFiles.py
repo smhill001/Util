@@ -119,9 +119,19 @@ class built_path:
 def MakeKeyDate(FN):
     import datetime
 
-    Key=FN[0:7]+FN[16:32]
-    DateTime=datetime.datetime.strptime(Key[7:11]+"-"+Key[11:13]+"-" \
-        +Key[13:15]+"T"+Key[15:17]+":"+Key[17:19]+":"+Key[19:21], \
-        '%Y-%m-%dT%H:%M:%S')
+    fields=FN.split('-')
+    DT=fields[1]
+    Key=FN[0:7]+DT
+    print "DT[8]=",DT[8]
+    if DT[8]=="T":
+        print "In first branch"
+        DateTime=datetime.datetime.strptime(DT[0:4]+"-"+DT[4:6]+"-" \
+            +DT[6:8]+"T"+DT[9:11]+":"+DT[11:13]+":"+DT[13:15], \
+            '%Y-%m-%dT%H:%M:%S')
+    else:
+        print "In second branch"
+        DateTime=datetime.datetime.strptime(DT[0:4]+"-"+DT[4:6]+"-" \
+            +DT[6:8]+"T"+DT[8:10]+":"+DT[10:12]+":"+DT[12:14], \
+            '%Y-%m-%dT%H:%M:%S')
 
     return Key,DateTime

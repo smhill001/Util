@@ -33,10 +33,9 @@ class PlotSetup(CF.readtextfilelines):
 
         for recordindex in range(1,self.nrecords):
             fields=self.CfgLines[recordindex].split(',')
-            print ""
-            print "fields[0]=",fields[0],PlotID
+            #print "fields[0]=",fields[0],PlotID
             if fields[0] == PlotID:
-                print "fields[1]=",fields[1],PlotType
+                #print "fields[1]=",fields[1],PlotType
                 if fields[1] == PlotType:
                     self.PlotType=str(fields[1])
                     print self.PlotType,self.ID
@@ -51,8 +50,8 @@ class PlotSetup(CF.readtextfilelines):
                     self.DataFile=str(fields[10])
                     if self.PlotType=="Map":
                         self.Labels=str(fields[11])
-                        print fields[11],fields[13]
-                        print "###############",self.Labels
+                        #print fields[11],fields[13]
+                        #print "###############",self.Labels
                         self.Grid=str(fields[12])
                         self.ColorPlane=str(fields[13])
 
@@ -86,6 +85,33 @@ class PlotSetup(CF.readtextfilelines):
         pl.title(self.ID,fontsize=9)
         
         return 0
+
+    def Setup_PlotDate(self,date_min,date_max,date_interval,
+                       canvas_size=[6.5,2.5],new_canvas=True,subplot=[1,1,1]):
+        import pylab as pl
+        import numpy as np
+        #SHOULD DECOUPLE FIGURE SIZE FROM PLOT SETUP, BUT PASS SUBPLOT LOC.
+        if new_canvas:
+            canvas=pl.figure(figsize=(canvas_size[0],canvas_size[1]), dpi=150, facecolor="white")
+            canvas.subplots_adjust(hspace=0.001)
+        AX=pl.subplot(subplot[0],subplot[1],subplot[2])
+        #if self.Xtype=='linear':
+        #    xtks=(date_max-date_min)/date_interval  
+        #    pl.xticks(np.linspace(date_min,date_max,xtks, endpoint=True))
+        #pl.xlim(date_min,date_max)
+        if self.Ytype=='linear':
+            ytks=(self.Y1-self.Y0)/self.DY+1  
+            AX.set_yticks(np.linspace(self.Y0,self.Y1,ytks, endpoint=True))
+        AX.set_ylim(self.Y0,self.Y1)
+        AX.set_yscale(self.Ytype)
+        AX.grid(linewidth=0.5)
+        AX.tick_params(axis='both', which='major', labelsize=7)
+        #IN THE FUTURE SHOULD MAKE THESE CONFIGURATION FILE FIELDS
+        #if self.Type=="Time":
+            #AX.set_ylabel(r"$TBD$",fontsize=7)
+            #AX.set_xlabel(r"$TBD$",fontsize=7)
+        #AX.set_title(self.ID,fontsize=9)
+        return AX#,canvas
        
     def Setup_CaratoPy_Map(self,Projection,xs,ys,ns):
         import pylab as pl
@@ -123,11 +149,17 @@ class PlotSetup(CF.readtextfilelines):
         
         return 0
 
-def Draw_with_Conf_Level(Data,scl,clr,lbl):                
+def Draw_with_Conf_Level(Data,scl,clr,lbl,step=False):                
     import pylab as pl
-    pl.plot(Data[:,0],Data[:,1]*scl,label=lbl,linewidth=1.0,color=clr)
-    if Data.shape[1]==4:
-        pl.plot(Data[:,0],(Data[:,1]+1.96*Data[:,3])*scl,linewidth=0.2,color=clr)
-        pl.plot(Data[:,0],(Data[:,1]-1.96*Data[:,3])*scl,linewidth=0.2,color=clr)
+    if step:
+        pl.step(Data[:,0],Data[:,1]*scl,label=lbl,linewidth=1.0,color=clr)
+        if Data.shape[1]==4:
+            pl.step(Data[:,0],(Data[:,1]+1.96*Data[:,3])*scl,linewidth=0.2,color=clr)
+            pl.step(Data[:,0],(Data[:,1]-1.96*Data[:,3])*scl,linewidth=0.2,color=clr)
+    else:
+        pl.plot(Data[:,0],Data[:,1]*scl,label=lbl,linewidth=1.0,color=clr)
+        if Data.shape[1]==4:
+            pl.plot(Data[:,0],(Data[:,1]+1.96*Data[:,3])*scl,linewidth=0.2,color=clr)
+            pl.plot(Data[:,0],(Data[:,1]-1.96*Data[:,3])*scl,linewidth=0.2,color=clr)
     #ax.fill_between((Data[:,0]),(Data[:,1]+1.96*Data[:,3])*scl,(Data[:,1]-1.96*Data[:,3])*scl)
     return 0        

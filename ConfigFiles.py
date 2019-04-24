@@ -22,6 +22,33 @@ PURPOSE:    This module provides a base class and various child classes for
 """
 
 drive='f:'
+import urllib2
+
+class readurllines:
+    def __init__(self,URLtoRead):
+        response = urllib2.urlopen(URLtoRead)
+        temp=response.read()
+        self.URLLines=temp.split("\n")
+        self.nrecords=len(self.URLLines)
+        self.URLtoRead=URLtoRead
+        print "Read "+str(self.nrecords)+" URL records"
+
+class Observing_Conditions(readurllines):
+    pass
+    def load_records(self,DateUT):
+        self.ObsDateUT=[]  #Keyword for star identification
+        self.PWV=[]           #Target, e.g., component of a multiple star
+        self.Press=[]           #Target, e.g., component of a multiple star
+        self.TempC=[]
+        self.RelHum=[]
+        for recordindex in range(1,self.nrecords):
+            RecordDate=self.URLLines[recordindex][5:21]
+            if RecordDate[0:10] == DateUT:
+                self.ObsDateUT.append(RecordDate+":00UT")
+                self.PWV.append(str(self.URLLines[recordindex][22:27]))
+                self.Press.append(str(self.URLLines[recordindex][53:61]))
+                self.TempC.append(str(self.URLLines[recordindex][62:66]))                
+                self.RelHum.append(str(self.URLLines[recordindex][67:72]))                
 
 class readtextfilelines:
     def __init__(self,FiletoRead):

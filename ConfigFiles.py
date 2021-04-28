@@ -8,15 +8,24 @@ PURPOSE:    This module provides a base class and various child classes for
             reading and parsing comma-delimited text configuration files. 
             The base class could also be extended for reading data files.
             
-            0CLASS readtextfilelines
-            0  INIT
-            1CLASS Target_Parameters
-            1  INIT
-            1  loadtargetparams
-            2CLASS built_path
-            2  INIT
-            2  Spectra
-            2  Equivalent_Width
+            0CLASS readurllines
+            0  init
+            1CLASS Observing_Conditions
+            1  load_records
+            2CLASS readtextfilelines
+            2  init
+            3CLASS Target_Parameters
+            3  INIT
+            3  loadtargetparams
+            4CLASS measurement_list
+            4  load_records
+            5CLASS ObsFileNames
+            5  GetFileNames
+            6CLASS built_path
+            6  init
+            6  Spectra
+            6  Equivalent_Width
+            7FUNCTION MakeKeyDate
 
 @author: Steven Hill
 """
@@ -25,7 +34,11 @@ drive='f:'
 import urllib2
 
 class readurllines:
+    """
+    Base class to read text filtes from a website
+    """
     def __init__(self,URLtoRead):
+        print URLtoRead
         response = urllib2.urlopen(URLtoRead)
         temp=response.read()
         self.URLLines=temp.split("\n")
@@ -34,6 +47,9 @@ class readurllines:
         print "Read "+str(self.nrecords)+" URL records"
 
 class Observing_Conditions(readurllines):
+    """
+    Read observing conditions from the Suomi-net web site
+    """
     pass
     def load_records(self,DateUT):
         self.ObsDateUT=[]  #Keyword for star identification
@@ -53,6 +69,7 @@ class Observing_Conditions(readurllines):
 class readtextfilelines:
     def __init__(self,FiletoRead):
         """
+        Base class for reading local text files
         If no path is given, this class reads from the working directory.
         """
         CfgFile=open(FiletoRead,'r')
@@ -89,7 +106,9 @@ class Target_Parameters(readtextfilelines):
                     self.AppSize=float(fields[8])
 
 class measurement_list(readtextfilelines):
-    #Used to reside in SRL and have a different API for loading records
+    """
+    This class is used to load spectral observation metadata.
+    """
     pass
     
     def load_records(self,MeasTgt="All",DateUTSelect="All",Grating="All"):
@@ -116,6 +135,20 @@ class measurement_list(readtextfilelines):
                         self.Camera.extend([str(fields[5])])
                         self.Grating.extend([str(fields[6])])
                         self.FileList.extend([str(fields[7])])
+                        
+class meas_extend_test(measurement_list):
+    pass
+
+    def load_extra_field(self,MeasTgt="All",DateUTSelect="All",Grating="All"):
+        print "Hi in meas_extend_test"
+        self.extra_field=[]
+        for recordindex in range(1,self.nrecords):
+            fields=self.CfgLines[recordindex].split(',')
+            if MeasTgt=="All" or MeasTgt==str(fields[0]):
+                if Grating=="All" or Grating==str(fields[6]):
+                    if DateUTSelect=="All" or DateUTSelect==str(fields[3]):
+                        self.extra_field.extend([str(fields[8])])
+        
 
 class ObsFileNames(readtextfilelines):
     #Used to be the function GetObsFileNames in SRL
@@ -162,3 +195,5 @@ def MakeKeyDate(FN):
             '%Y-%m-%dT%H:%M:%S')
 
     return Key,DateTime
+
+

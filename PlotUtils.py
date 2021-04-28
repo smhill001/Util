@@ -113,7 +113,7 @@ class PlotSetup(CF.readtextfilelines):
         #AX.set_title(self.ID,fontsize=9)
         return AX#,canvas
        
-    def Setup_CaratoPy_Map(self,Projection,xs,ys,ns):
+    def Setup_CaratoPy_Map(self,Projection,xs,ys,ns,ytk=True,ptitle=False):
         import pylab as pl
         import numpy as np
         import cartopy.crs as ccrs
@@ -122,10 +122,14 @@ class PlotSetup(CF.readtextfilelines):
         if Projection=="PC":
             ax = pl.subplot(xs,ys,ns,projection=ccrs.PlateCarree())
             ax.gridlines(crs=ccrs.PlateCarree(),linewidth=0.2)
+            #ax.set_xticks(np.linspace(-180,180,13), minor=False, crs=None)
             ax.set_xticks(np.linspace(-180,180,13), minor=False, crs=None)
             ax.set_yticks(np.linspace(-90,90,7), minor=False, crs=None)
+            if not(ytk):
+                ax.set_yticklabels([])
             ax.tick_params(axis='both', which='major', labelsize=7)
-            pl.ylabel("Latitude (deg)",fontsize=7)
+            if ytk:
+                pl.ylabel("Latitude (deg)",fontsize=7)
             pl.xlabel("Longitude (deg)",fontsize=7)
         else:
             if Projection=="NP":
@@ -145,7 +149,10 @@ class PlotSetup(CF.readtextfilelines):
             ax.set_boundary(circle, transform=ax.transAxes)
 
         #IN THE FUTURE SHOULD MAKE THESE CONFIGURATION FILE FIELDS
-        pl.title(self.ID,fontsize=9)
+        if not(ptitle):
+            pl.title(self.ID,fontsize=9)
+        else:
+            pl.title(ptitle)
         
         return 0
 

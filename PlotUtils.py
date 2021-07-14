@@ -113,7 +113,7 @@ class PlotSetup(CF.readtextfilelines):
         #AX.set_title(self.ID,fontsize=9)
         return AX#,canvas
        
-    def Setup_CaratoPy_Map(self,Projection,xs,ys,ns,ytk=True,ptitle=False):
+    def Setup_CaratoPy_Map(self,Projection,xs,ys,ns,xtk=True,ytk=True,ptitle=False):
         import pylab as pl
         import numpy as np
         import cartopy.crs as ccrs
@@ -127,10 +127,13 @@ class PlotSetup(CF.readtextfilelines):
             ax.set_yticks(np.linspace(-90,90,7), minor=False, crs=None)
             if not(ytk):
                 ax.set_yticklabels([])
-            ax.tick_params(axis='both', which='major', labelsize=7)
             if ytk:
-                pl.ylabel("Latitude (deg)",fontsize=7)
-            pl.xlabel("Longitude (deg)",fontsize=7)
+                pl.ylabel("Latitude (deg)",fontsize=7,labelpad=0.0)
+            if not(xtk):
+                ax.set_xticklabels([])
+            if xtk:
+                pl.xlabel("Longitude (deg)",fontsize=7,labelpad=0.0)
+            ax.tick_params(axis='both', which='major', labelsize=7)
         else:
             if Projection=="NP":
                 ax = pl.subplot(xs,ys,ns,projection=ccrs.NorthPolarStereo())
@@ -150,9 +153,9 @@ class PlotSetup(CF.readtextfilelines):
 
         #IN THE FUTURE SHOULD MAKE THESE CONFIGURATION FILE FIELDS
         if not(ptitle):
-            pl.title(self.ID,fontsize=9)
+            pl.title(self.ID,fontsize=7,pad=0.0)
         else:
-            pl.title(ptitle)
+            pl.title(ptitle,fontsize=7)
         
         return 0
 

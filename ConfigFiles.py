@@ -196,4 +196,30 @@ def MakeKeyDate(FN):
 
     return Key,DateTime
 
+class video_metadata_list(readtextfilelines):
+    """
+    This class is used to load spectral observation metadata.
+    """
+    pass
+    
+    def load_records(self):
 
+        #print "Hi in video_metadata_list>load_records"
+        self.VideoFile=[]  
+        self.MetaFile=[]           
+        self.TimeStamp=[]          
+        self.Exposure=[]           
+        self.Gain=[]      
+        self.Gamma=[]      
+        self.Binning=[]    
+        self.CaptureArea=[]        
+        for recordindex in range(1,self.nrecords):
+            fields=self.CfgLines[recordindex].split(',')
+            self.VideoFile.extend([str(fields[0])])
+            self.MetaFile.extend([str(fields[1])])
+            self.TimeStamp.extend([str(fields[2])])
+            self.Exposure.extend([str(fields[3])])
+            self.Gain.extend([str(fields[4])])
+            self.Gamma.extend([str(fields[5])])
+            self.Binning.extend([str(fields[6])])
+            self.CaptureArea.extend([str(fields[7])])

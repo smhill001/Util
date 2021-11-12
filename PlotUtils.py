@@ -120,20 +120,20 @@ class PlotSetup(CF.readtextfilelines):
         import matplotlib.path as mpath
 
         if Projection=="PC":
-            ax = pl.subplot(xs,ys,ns,projection=ccrs.PlateCarree())
-            ax.gridlines(crs=ccrs.PlateCarree(),linewidth=0.2)
+            self.ax = pl.subplot(xs,ys,ns,projection=ccrs.PlateCarree())
+            self.ax.gridlines(crs=ccrs.PlateCarree(),linewidth=0.2)
             #ax.set_xticks(np.linspace(-180,180,13), minor=False, crs=None)
-            ax.set_xticks(np.linspace(-180,180,13), minor=False, crs=None)
-            ax.set_yticks(np.linspace(-90,90,7), minor=False, crs=None)
+            self.ax.set_xticks(np.linspace(-180,180,13), minor=False, crs=None)
+            self.ax.set_yticks(np.linspace(-90,90,7), minor=False, crs=None)
             if not(ytk):
-                ax.set_yticklabels([])
+                self.ax.set_yticklabels([])
             if ytk:
                 pl.ylabel("Latitude (deg)",fontsize=7,labelpad=0.0)
             if not(xtk):
-                ax.set_xticklabels([])
+                self.ax.set_xticklabels([])
             if xtk:
                 pl.xlabel("Longitude (deg)",fontsize=7,labelpad=0.0)
-            ax.tick_params(axis='both', which='major', labelsize=7)
+            self.ax.tick_params(axis='both', which='major', labelsize=7)
         else:
             if Projection=="NP":
                 ax = pl.subplot(xs,ys,ns,projection=ccrs.NorthPolarStereo())

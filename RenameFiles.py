@@ -30,7 +30,7 @@ def MaximDL2WinJUPOS_Filenames(path):
     from astropy.io import fits
 
     fnlist = os.listdir(path)
-    #print fnlist
+    print fnlist
     FITSlist=[k for k in fnlist if 'fit' in k]
     #print FITSlist
     for fn in FITSlist:

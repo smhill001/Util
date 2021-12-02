@@ -4,6 +4,12 @@ Created on Wed Oct 06 14:36:01 2021
 
 @author: Steven Hill
 
+PURPOSE:    Create arrays of images of planetary observations - the final
+            navigated images for each filter channel plus a composite RGB
+            image. This is a quick way to replace the image tables I'd 
+            manually create in the annual Observations reports for each
+            observing session.
+
 EXAMPLE:    image_array_plot("Jupiter","20210927UT")
 """
 

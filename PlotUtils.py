@@ -159,6 +159,35 @@ class PlotSetup(CF.readtextfilelines):
         
         return 0
 
+    def Setup_SimpleCyl_Map(self,xs,ys,ns,xtk=True,ytk=True,ptitle=False):
+        import pylab as pl
+        import numpy as np
+        import matplotlib.path as mpath
+
+        self.ax = pl.subplot(xs,ys,ns)
+        #self.ax.gridlines(linewidth=0.2)
+        #ax.set_xticks(np.linspace(-180,180,13), minor=False, crs=None)
+        self.ax.set_xticks(np.linspace(-180,180,13), minor=False)
+        self.ax.set_yticks(np.linspace(-90,90,7), minor=False)
+        if not(ytk):
+            self.ax.set_yticklabels([])
+        if ytk:
+            pl.ylabel("Latitude (deg)",fontsize=7,labelpad=0.0)
+        if not(xtk):
+            self.ax.set_xticklabels([])
+        if xtk:
+            pl.xlabel("Longitude (deg)",fontsize=7,labelpad=0.0)
+        self.ax.tick_params(axis='both', which='major', labelsize=7)
+
+        #IN THE FUTURE SHOULD MAKE THESE CONFIGURATION FILE FIELDS
+        if not(ptitle):
+            pl.title(self.ID,fontsize=7,pad=0.0)
+        else:
+            pl.title(ptitle,fontsize=7)
+        
+        return 0
+
+
 def Draw_with_Conf_Level(Data,scl,clr,lbl,step=False):                
     import pylab as pl
     if step:

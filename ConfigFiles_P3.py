@@ -27,6 +27,8 @@ PURPOSE:    This module provides a base class and various child classes for
             6  Equivalent_Width
             7FUNCTION MakeKeyDate
 
+UPDATE: 2022-01-25 Converted to Python 3 (at least paritally tested)
+
 @author: Steven Hill
 """
 
@@ -41,7 +43,7 @@ class readurllines:
         #print(URLtoRead)
         response = urllib.request.urlopen(URLtoRead)
         temp=response.read()
-        self.URLLines=temp.split("\n")
+        self.URLLines=temp.splitlines()
         self.nrecords=len(self.URLLines)
         self.URLtoRead=URLtoRead
         print("Read "+str(self.nrecords)+" URL records")

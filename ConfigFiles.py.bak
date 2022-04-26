@@ -31,20 +31,20 @@ PURPOSE:    This module provides a base class and various child classes for
 """
 
 drive='f:'
-import urllib.request, urllib.error, urllib.parse
+import urllib2
 
 class readurllines:
     """
     Base class to read text filtes from a website
     """
     def __init__(self,URLtoRead):
-        #print(URLtoRead)
-        response = urllib.request.urlopen(URLtoRead)
+        print URLtoRead
+        response = urllib2.urlopen(URLtoRead)
         temp=response.read()
         self.URLLines=temp.split("\n")
         self.nrecords=len(self.URLLines)
         self.URLtoRead=URLtoRead
-        print("Read "+str(self.nrecords)+" URL records")
+        print "Read "+str(self.nrecords)+" URL records"
 
 class Observing_Conditions(readurllines):
     """
@@ -77,7 +77,7 @@ class readtextfilelines:
         CfgFile.close()
         self.nrecords=len(self.CfgLines)
         self.FiletoRead=FiletoRead
-        print("Read "+str(self.nrecords)+" records")
+        print "Read "+str(self.nrecords)+" records"
 
 class Target_Parameters(readtextfilelines):
     """
@@ -89,7 +89,7 @@ class Target_Parameters(readtextfilelines):
 
         for recordindex in range(1,self.nrecords):
             fields=self.CfgLines[recordindex].split(',')
-            print(fields[0], fields[1])
+            print fields[0], fields[1]
             if fields[0] == TargetID:
                 self.TargetID=fields[0]
                 self.TargetType=fields[1]
@@ -113,7 +113,7 @@ class measurement_list(readtextfilelines):
     
     def load_records(self,MeasTgt="All",DateUTSelect="All",Grating="All"):
 
-        print("Hi in measurement_list>load_records")
+        print "Hi in measurement_list>load_records"
         self.MeasTarget=[]  #Keyword for star identification
         self.DataType=[]           #Target, e.g., component of a multiple star
         self.DataTarget=[]           #Target, e.g., component of a multiple star
@@ -140,7 +140,7 @@ class meas_extend_test(measurement_list):
     pass
 
     def load_extra_field(self,MeasTgt="All",DateUTSelect="All",Grating="All"):
-        print("Hi in meas_extend_test")
+        print "Hi in meas_extend_test"
         self.extra_field=[]
         for recordindex in range(1,self.nrecords):
             fields=self.CfgLines[recordindex].split(',')
@@ -182,14 +182,14 @@ def MakeKeyDate(FN):
     fields=FN.split('-')
     DT=fields[1]
     Key=FN[0:7]+DT
-    print("DT[8]=",DT[8])
+    print "DT[8]=",DT[8]
     if DT[8]=="T":
-        print("In first branch")
+        print "In first branch"
         DateTime=datetime.datetime.strptime(DT[0:4]+"-"+DT[4:6]+"-" \
             +DT[6:8]+"T"+DT[9:11]+":"+DT[11:13]+":"+DT[13:15], \
             '%Y-%m-%dT%H:%M:%S')
     else:
-        print("In second branch")
+        print "In second branch"
         DateTime=datetime.datetime.strptime(DT[0:4]+"-"+DT[4:6]+"-" \
             +DT[6:8]+"T"+DT[8:10]+":"+DT[10:12]+":"+DT[12:14], \
             '%Y-%m-%dT%H:%M:%S')

@@ -5,12 +5,12 @@ Created on Fri Apr 09 06:43:45 2021
 @author: Steven Hill
 """
 
-str_in="20220124UT"
-str_out="20220131UT"
+str_in="Jupite_"
+str_out="Jupiter_"
 #path = 'F:/Astronomy/Projects/Planets/Jupiter/Imaging Data/20201009UT/'
 #path='F:/Astronomy/Data/2021/10/12UT/M27/raw/'
 
-path="c:/Astronomy/Data/2022/01/31UT/"
+#path="C:/Astronomy/Data/2023/12/07/"
 def RenameFiles(path,str_in,str_out):
     import os
     fnlist = os.listdir(path)
